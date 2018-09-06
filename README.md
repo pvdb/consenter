@@ -1,8 +1,6 @@
 # Consenter
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/consenter`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+`Enumerable#each_consented` is an opinionated but idiomatic way to filter elements of an `Enumerable` by user consent.
 
 ## Installation
 
@@ -22,7 +20,41 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+`Enumerable#each_consented` works exactly like `Enumerable#each`, but before yielding each element of the collection, it prompts the user (via the `IO#console`, ie. `/dev/tty`) for confirmation, using the prompt provided as an argument.
+
+A simple example: `puts 0.upto(9).each_consented('Pick %d?').sum` will print out the sum of all numbers between `0` and `9` which the user has picked.
+
+The following example shows the interaction:
+
+* each element is passed to `Kernel#format` to generate the customizable prompt
+* answering `y` will cause the current element to be yielded
+* answering `Y` will cause the current element and all remaining ones to be yielded
+* answering `n` will cause the current element to be skipped
+* answering `N` will cause the current element and all remaining ones to be skipped
+* answering `q` will cause the iteration to be aborted
+* answering `?` will print out a help message
+* answering anything else will also print out the help message
+
+```
+$ ruby -r consenter -e "puts 0.upto(9).each_consented('Pick %d?').sum"
+Pick 0? [y,n,Y,N,q,?] ?
+y - yes to this
+n - no to this
+Y - yes to this and all remaining
+N - no to this and all remaining
+q - quit
+? - help
+Pick 0? [y,n,Y,N,q,?] y
+Pick 1? [y,n,Y,N,q,?] n
+Pick 2? [y,n,Y,N,q,?] n
+Pick 3? [y,n,Y,N,q,?] n
+Pick 4? [y,n,Y,N,q,?] y
+Pick 5? [y,n,Y,N,q,?] y
+Pick 6? [y,n,Y,N,q,?] N
+9
+$ _
+```
+
 
 ## Development
 
