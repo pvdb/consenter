@@ -1,3 +1,6 @@
+# rubocop:disable Style/SymbolArray
+# rubocop:disable Style/HashSyntax
+
 require 'bundler/gem_tasks'
 require 'rake/testtask'
 
@@ -7,8 +10,6 @@ Rake::TestTask.new(:test) do |t|
   t.test_files = FileList['test/**/*_test.rb']
 end
 
-# rubocop:disable Style/HashSyntax
-
 task :validate_gemspec do
   Bundler.load_gemspec('consenter.gemspec').validate
 end
@@ -17,6 +18,23 @@ task :version => :validate_gemspec do
   puts Consenter::VERSION
 end
 
-task :default => :test
+require 'rubocop/rake_task'
+
+RuboCop::RakeTask.new(:rubocop)
+
+require 'rake/testtask'
+
+Rake::TestTask.new(:test) do |t|
+  t.libs << 'test'
+  t.libs << 'lib'
+  t.test_files = FileList['test/**/*_test.rb']
+end
+
+task :default => [:rubocop, :test]
+
+task :documentation
+
+Rake::Task['build'].enhance([:default, :documentation])
 
 # rubocop:enable Style/HashSyntax
+# rubocop:enable Style/SymbolArray
