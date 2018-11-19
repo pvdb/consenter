@@ -11,6 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary       = 'Idiomatic Enumerable extension to filter by consent'
   spec.description   = 'Ask for consent for each element in an Enumerable'
   spec.homepage      = 'https://github.com/pvdb/consenter'
+  spec.license       = 'MIT'
 
   spec.files         = Dir.chdir(File.expand_path(__dir__)) do
     `git ls-files -z`
@@ -21,9 +22,8 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_development_dependency 'bundler', '~> 1.17'
-  spec.add_development_dependency 'minitest', '~> 5.0'
-  spec.add_development_dependency 'pry', '~> 0.12'
-  spec.add_development_dependency 'rake', '~> 12.0'
-  spec.add_development_dependency 'rubocop', '~> 0.60'
+  spec.add_development_dependency 'bundler'
+  spec.add_development_dependency 'pry'
+  spec.add_development_dependency 'rake'
+  spec.add_development_dependency 'rubocop'
 end
