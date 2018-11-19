@@ -3,7 +3,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'consenter/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'consenter'
+  spec.name          = Consenter::NAME
   spec.version       = Consenter::VERSION
   spec.authors       = ['Peter Vandenberk']
   spec.email         = ['pvandenberk@mac.com']
