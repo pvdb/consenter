@@ -3,9 +3,10 @@ set -euo pipefail
 IFS=$'\n\t'
 set -vx
 
-rbenv install -s
+[ -f Brewfile ] && brew bundle
+[ -f .ruby-version ] && rbenv install -s
 gem install --conservative bundler
-bundle install
+[ -f Gemfile ] && bundle install
 
 set +vxeu
 echo
