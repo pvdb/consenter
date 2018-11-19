@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+
+#
+# this script is inspired by the various incarnations of
+# a similar `pick` utility developed by Kernighan & Pike
+# in their seminal "The UNIX Programming Environment"...
+#
+
+lib = File.expand_path('../lib', __dir__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'consenter'
+
+nul = ARGV.delete('-0') || ARGV.delete('-print0')
+
+consented = ARGF.lazy.map(&:chomp).each_consented('Pick "%s"?').to_a
+
+if nul
+  print consented.join("\0")
+else
+  puts consented
+end
+
+# That's all Folks!
