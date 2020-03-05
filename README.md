@@ -35,7 +35,7 @@ The following example shows the interaction:
 * answering `?` will print out a help message
 * answering anything else will also print out the help message
 
-```
+```ruby
 $ ruby -r consenter -e "puts 0.upto(9).each_consented('Pick %d?').sum"
 Pick 0? [y,n,Y,N,q,?] ?
 y - yes to this
@@ -55,6 +55,50 @@ Pick 6? [y,n,Y,N,q,?] N
 $ _
 ```
 
+## Automation
+
+To use the consenter logic in Ruby scripts that are run non-interactively, e.g. via `cron`, where a human cannot be prompted for answers, you can provide options to pick all or none of the objects in the `Enumerable` without invoking the prompt:
+
+```ruby
+$ ruby -r consenter -e "puts 0.upto(9).each_consented('Pick %d?', all: true).sum"
+45
+$ _
+```
+
+Alternatively:
+
+```ruby
+$ ruby -r consenter -e "puts 0.upto(9).each_consented('Pick %d?', none: true).sum"
+0
+$ _
+```
+
+Obviously, instead of providing hard-coded `true` values for the `all:` or `none:` options, you would provide a boolean check, e.g. one that checks an environment variable:
+
+```ruby
+$ ruby -r consenter -e "puts 0.upto(9).each_consented('Pick %d?', all: ENV.fetch('CI', false)).sum"
+```
+
+This version would prompt like demoed above when the script is run interactively:
+
+```ruby
+$ ruby -r consenter -e "puts 0.upto(9).each_consented('Pick %d?', all: ENV.fetch('CI', false)).sum"
+Pick 0? [y,n,Y,N,q,?] y
+Pick 1? [y,n,Y,N,q,?] y
+Pick 2? [y,n,Y,N,q,?] y
+Pick 3? [y,n,Y,N,q,?] n
+Pick 4? [y,n,Y,N,q,?] N
+3
+$ _
+```
+
+... but would default to selecting all objects in the `Enumerable` when it is running in a CI environment like SemaphoreCI or Jenkins:
+
+```ruby
+$ CI=true ruby -r consenter -e "puts 0.upto(9).each_consented('Pick %d?', all: ENV.fetch('CI', false)).sum"
+45
+$ _
+```
 
 ## Development
 
