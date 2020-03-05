@@ -27,9 +27,12 @@ class Consenter # :nodoc:
 
   private_constant :ANSWERS
 
-  def initialize(prompt = '%s', inspector = :to_s)
+  def initialize(prompt = '%s', options = {})
     @prompt = prompt + ' [' + ANSWERS + '] '
-    @inspector = inspector
+
+    @inspector  = options.fetch(:inspector, :to_s)
+    @no_to_all  = options.fetch(:none, false)
+    @yes_to_all = options.fetch(:all, false)
   end
 
   def consent_for?(arg)
@@ -61,8 +64,6 @@ class Consenter # :nodoc:
   private :consent_for?
 
   def for(enumerable, &block)
-    @yes_to_all = false
-    @no_to_all  = false
     enumerable.each do |arg|
       case consent_for? arg
       when true  then block.yield(arg) # user pressed 'y' or 'Y'
@@ -75,11 +76,11 @@ class Consenter # :nodoc:
 end
 
 module Enumerable # :nodoc:
-  def each_consented(prompt = '%s', inspector = :to_s)
+  def each_consented(prompt = '%s', options = {})
     unless block_given?
-      return to_enum(__method__, prompt) do size; end
+      return to_enum(__method__, prompt, options) do size; end
     end
-    Consenter.new(prompt, inspector).for(self) do |*args|
+    Consenter.new(prompt, options).for(self) do |*args|
       yield(*args)
     end
   end
