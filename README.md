@@ -100,6 +100,24 @@ $ CI=true ruby -r consenter -e 'puts 0.upto(9).each_consented("Pick %d?", all: E
 $ _
 ```
 
+Another possible scenario is that you prompt the user if the script is running in interactive mode, but decide to select `all:` or `none:` of the enumerable elements if the script is run non-interactively, e.g. as part of a `cron` job.
+
+So, to select `all:` of the elements when in non-interactive mode you can use:
+
+```ruby
+$ </dev/null ruby -r consenter -e 'puts 0.upto(9).each_consented("Pick %d?", all: !STDIN.tty?).sum'
+45
+$ _
+```
+
+... and to select `none:` of the elements you would use this instead:
+
+```ruby
+$ </dev/null ruby -r consenter -e 'puts 0.upto(9).each_consented("Pick %d?", none: !STDIN.tty?).sum'
+0
+$ _
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
